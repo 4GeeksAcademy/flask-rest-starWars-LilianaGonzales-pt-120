@@ -23,10 +23,24 @@ db = SQLAlchemy()
 
 
 
-user_vehicle = db.Table('users_characters',
+user_character = db.Table('users_characters',
     db.Column('id', db.Integer, primary_key = True),
     db.Column('user_id', db.Integer,db.ForeignKey("users.id"), nullable=False),
     db.Column('character_id', db.Integer,db.ForeignKey("characters.id"), nullable=False),
+    db.Column('favorite', db.Boolean(), default=False)
+)
+
+user_vehicle = db.Table('users_vehicles',
+    db.Column('id', db.Integer, primary_key = True),
+    db.Column('user_id', db.Integer,db.ForeignKey("users.id"), nullable=False),
+    db.Column('vehicle_id', db.Integer,db.ForeignKey("vehicles.id"), nullable=False),
+    db.Column('favorite', db.Boolean(), default=False)
+)
+
+user_planet = db.Table('users_planets',
+    db.Column('id', db.Integer, primary_key = True),
+    db.Column('user_id', db.Integer,db.ForeignKey("users.id"), nullable=False),
+    db.Column('planet_id', db.Integer,db.ForeignKey("planets.id"), nullable=False),
     db.Column('favorite', db.Boolean(), default=False)
 )
 
@@ -39,7 +53,9 @@ class User(db.Model):
     password: Mapped[str] = mapped_column(String(20), nullable=False)
     subscription: Mapped[datetime] = mapped_column(DateTime)
 
-    characteres: Mapped[List["Character"]] = relationship(back_populates="users", secondary=user_vehicle)
+    characteres: Mapped[List["Character"]] = relationship(back_populates="users", secondary=user_character)
+    vehicles:  Mapped[List["Vehicle"]] = relationship(back_populates="users", secondary=user_vehicle)
+    planets: Mapped[List["Planet"]] = relationship(back_populates="users", secondary=user_planet)
 
 class Character (db.Model):
     __table__= 'characters'
@@ -52,7 +68,7 @@ class Character (db.Model):
 
     list_vehicle : Mapped [List["Vehicle"]] = relationship(back_populates="character")
 
-    users: Mapped[List["User"]] = relationship(back_populates="characteres", secondary=user_vehicle )
+    users: Mapped[List["User"]] = relationship(back_populates="characteres", secondary=user_character )
 
 class Planet (db.Model):
     __table__= 'planets'
@@ -62,6 +78,8 @@ class Planet (db.Model):
     climate: Mapped[str] = mapped_column(String(20),nullable=False)
     population: Mapped[int] = mapped_column(Integer, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime)
+
+    users: Mapped[List["User"]] = relationship(back_populates="planets", secondary=user_planet)
 
 class Vehicle (db.Model):
     __table__= 'vehicles'
@@ -75,6 +93,7 @@ class Vehicle (db.Model):
     character_id: Mapped[int] = mapped_column(Integer, db.ForeignKey("characters.id"), nullable=False)
 
     character: Mapped["Character"] = relationship(back_populates="list_vehicle")
+    users: Mapped[List["User"]] = relationship(back_populates="vehicles", secondary=user_vehicle)
 
 
 
