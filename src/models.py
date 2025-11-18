@@ -58,7 +58,7 @@ class User(db.Model):
     planets: Mapped[List["Planet"]] = relationship(back_populates="users", secondary=user_planet)
 
 class Character (db.Model):
-    __table__= 'characters'
+    __tablename__= 'characters'
 
     id:Mapped[int] = mapped_column(Integer, primary_key= True)
     name: Mapped[str] = mapped_column(String(80),nullable=False)
@@ -71,7 +71,7 @@ class Character (db.Model):
     users: Mapped[List["User"]] = relationship(back_populates="characteres", secondary=user_character )
 
 class Planet (db.Model):
-    __table__= 'planets'
+    __tablename__= 'planets'
 
     id:Mapped[int] = mapped_column(Integer, primary_key= True)
     name: Mapped[str] = mapped_column(String(50),nullable=False)
@@ -82,7 +82,7 @@ class Planet (db.Model):
     users: Mapped[List["User"]] = relationship(back_populates="planets", secondary=user_planet)
 
 class Vehicle (db.Model):
-    __table__= 'vehicles'
+    __tablename__= 'vehicles'
 
     id:Mapped[int] = mapped_column(Integer, primary_key= True)
     name: Mapped[str] = mapped_column(String(50),nullable=False)
